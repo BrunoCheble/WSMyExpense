@@ -1,0 +1,18 @@
+.galeria-modal-2ed .modal-body{padding: 0;}
+.galeria-modal-2ed img{width: 100%; vertical-align: middle;}
+
+.show-galeria-modal-2ed{
+	font-size:80px;
+    position: absolute;
+    width: 100%;
+    text-align: center;
+    top: 30%;
+    color: #fff;
+    text-shadow: 1px 1px 1px rgba(0, 0, 0, 1);
+opacity: 0;
+    -webkit-transition: opacity .5s ease-in-out;
+  -moz-transition: opacity .5s ease-in-out;
+  -ms-transition: opacity .5s ease-in-out;
+  -o-transition: opacity .5s ease-in-out;
+  transition: opacity .5s ease-in-out;
+}
