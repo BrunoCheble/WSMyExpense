@@ -21,8 +21,21 @@ class ExpenseController extends ActiveController
     {
         $actions = parent::actions();
         unset($actions['index']);
+        unset($actions['update']);
+        unset($actions['create']);
         return $actions;
     }
+
+    protected function verbs(){
+        return [
+            'create' => ['POST'],
+            'update' => ['PUT', 'PATCH','POST'],
+            'delete' => ['DELETE'],
+            'view' => ['GET'],
+            'index'=>['GET'],
+        ];
+    }
+
 
 	public function behaviors()
 	{
@@ -62,7 +75,34 @@ class ExpenseController extends ActiveController
 		die('Erro');
 	}
 
-/*
+	private function updateStatus($model) {
+
+		$model->status = Yii::$app->request->bodyParams['Expense']['status'];
+
+		if($model->save()) return $model;
+	}
+
+	public function actionUpdate($id) {
+		
+		$model = Expense::findOne($id);
+
+		// Alteração de Status
+		if(!empty(Yii::$app->request->bodyParams))
+			return $this->updateStatus($model);
+
+		// Alteração no formulário
+		
+		$form  = new ExpenseForm;
+
+		if($model->load(Yii::$app->request->post()) && $model->validate()) {
+
+			$form->repeat   = Yii::$app->request->post('repeat');
+			$form->_expense = $model;
+
+			return $form->update();
+		}
+	}
+	
 	public function createAction() {
 		
 		$model = new Expense;
@@ -73,34 +113,10 @@ class ExpenseController extends ActiveController
 			$form->repeat   = Yii::$app->request->post('repeat');
 			$form->_expense = $model;
 
-			$form->create();
+			return $form->create();
 		}
 
-		exit();
+		return false;
 	}
 
-	public function actionUpdate() {
-		
-		die('2');
-		$model = new Expense();
-
-		if($model->load(Yii::$app->request->post()) && $model->save()) {
-			die('salvo com sucesso');
-		}
-
-		exit();
-	}
-
-	public function deleteAction($id) {
-		
-		$model = new Expense();
-
-		die('3');
-		if($model->load(Yii::$app->request->post()) && $model->save()) {
-			die('salvo com sucesso');
-		}
-
-		exit();
-	}
-	*/
 }

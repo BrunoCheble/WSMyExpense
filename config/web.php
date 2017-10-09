@@ -62,7 +62,7 @@ $config = [
                 [
                     'class' => 'yii\rest\UrlRule', 
                     'controller' => 'expense',
-                ],
+                ]
             ],
         ],
         'formatter' => [

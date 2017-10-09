@@ -18,7 +18,6 @@ use Yii;
  */
 class Expense extends \yii\db\ActiveRecord
 {
-    public $updateAll;
     /**
      * @inheritdoc
      */
@@ -35,7 +34,7 @@ class Expense extends \yii\db\ActiveRecord
         return [
             [['title', 'value'], 'required'],
             [['value'], 'number'],
-            [['expense_id','updateAll'], 'integer'],
+            [['expense_id'], 'integer'],
             [['updated_at', 'created_at','due_date'], 'safe'],
             [['title'], 'string', 'max' => 45],
             [['status'], 'string', 'max' => 10]
@@ -66,9 +65,6 @@ class Expense extends \yii\db\ActiveRecord
             if (!$insert) {
 
                 $this->updated_at = date('Y-m-d H:s:i');
-
-                if (!empty($this->updateAll)) 
-                    return Expense::updateAll(['value' => $this->value, 'title' => $this->title, 'status' => $this->status, 'updated_at' => $this->updated_at], ['expense_id' => $this->expense_id, 'status' => 'PENDENTE']);
             }
             else
                 $this->created_at = date('Y-m-d H:s:i');
@@ -78,5 +74,22 @@ class Expense extends \yii\db\ActiveRecord
 
         return false;
     }
+
+    public function delete() {
+
+        if(parent::delete()) {
+            
+            if($this->status == 'PENDENTE'){
+                return Expense::deleteAll(['expense_id' => $this->expense_id, 'status' => 'PENDENTE']);
+            }
+
+            return true;    
+        }
+
+        return false;
+        
+    }
+
+        
 
 }

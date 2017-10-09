@@ -13,6 +13,7 @@ class ExpenseForm extends Model
 {
     public $repeat = 1;
     public $_expense;
+    public $updateAll;
 
     /**
      * @return array the validation rules.
@@ -20,7 +21,7 @@ class ExpenseForm extends Model
     public function rules()
     {
         return [
-            [['repeat'], 'integer'],
+            [['repeat','updateAll'], 'integer'],
             [['expense'], 'required'],
         ];
     }
@@ -39,5 +40,27 @@ class ExpenseForm extends Model
         }
 
         return true;
+    }
+
+    public function update() {
+
+        if(!empty($this->updateAll)) {
+            
+            $conditions = ['expense_id' => $this->_expense->expense_id, 'status' => 'PENDENTE'];
+
+            // Atualizar somente os proximos, a partir da data do registro
+            if($this->updateAll == 2)
+                $conditions[] = [ 'AND', ['>=', 'due_date', $this->_expense->due_date]];
+
+            // Qtd de registros deletados
+            $this->repeat = Expense::deleteAll($conditions);
+
+            return $this->create();
+        }
+        
+        $model = Expense::findOne($this->_expense->id);
+        $model = $this->_expense;
+
+        return $this->save();
     }
 }
